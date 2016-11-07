@@ -836,13 +836,14 @@
                 [self downloadImageWithURL:url  completionBlock:^(BOOL succeeded, UIImage *image) {
 
                     if (!succeeded) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            // The `visible` property
+                            if ([[iconProperty valueForKey:@"visible"] boolValue]) {
+                                marker.map = self.mapCtrl.map;
+                            }
 
-                        // The `visible` property
-                        if ([[iconProperty valueForKey:@"visible"] boolValue]) {
-                            marker.map = self.mapCtrl.map;
-                        }
-
-                        [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+                            [self.commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+                        });
                         return;
                     }
 
